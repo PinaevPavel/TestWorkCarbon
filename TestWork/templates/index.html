@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>GPU</title>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-3.4.1.min.js') }}"></script>
+</head>
+
+<body>
+<table>
+  <tr>
+    <td>
+		<table id="cpu" border="1">
+			<p></p>
+			<tr><th>CPU utilization</th></tr>
+		</table>
+    </td>
+
+    <td>
+		<table id="cpu2" border="1">
+			<input id="sortMin" type="button" value="Sort Min">
+			<input id="sortMax" type="button" value="Sort Max">
+			<tr><th>CPU utilization sort</th></tr>
+		</table>
+    </td>
+  </tr>
+</table>
+<script type="text/javascript">
+var data = {{data|tojson}};
+	data = data.utilizations;
+	data = data.slice(-100);
+
+	data.forEach(function callback(obj, index, array) {
+		$(`<tr><td>${obj.utilization}</td></tr>`).appendTo('#cpu');
+	});
+	
+	var dataSort = [...data].sort(function(a,b) {
+			return a.utilization - b.utilization ;
+		});
+	dataSort.forEach(function callback(obj, index, array) {
+			$(`<tr class="sorted"><td>${obj.utilization}</td></tr>`).appendTo('#cpu2');
+		});
+
+
+	sortMin.onclick = function() {
+    	dataSort = [...data].sort(function(a,b) {
+			return a.utilization - b.utilization ;
+		});
+    $('.sorted').remove();
+		dataSort.forEach(function callback(obj, index, array) {
+			$(`<tr class="sorted"><td>${obj.utilization}</td></tr>`).appendTo('#cpu2');
+		});
+  	};
+
+	sortMax.onclick = function() {
+ 
+    	dataSort = [...data].sort(function(a,b) {
+			return b.utilization - a.utilization;
+		});
+  	$('.sorted').remove();
+		dataSort.forEach(function callback(obj, index, array) {
+			$(`<tr class="sorted"><td>${obj.utilization}</td></tr>`).appendTo('#cpu2');
+		});
+
+  	};;
+</script>
+</body>
